@@ -60,7 +60,7 @@ Given /^(?:|I )am on (.+)$/ do |page_name|
 end
 
 When /^(?:|I )go to (.+)$/ do |page_name|
-  Given %{I am on #{page_name}"}
+  step %Q{I am on #{page_name}"}
 end
 
 When /^(?:|I )press "([^"]*)"$/ do |button|
