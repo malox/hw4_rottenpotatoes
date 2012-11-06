@@ -1,0 +1,2 @@
+rm -f hw4.tar.gz
+tar czf hw4.tar.gz app/ config/ db/migrate features/ spec/ Gemfile
