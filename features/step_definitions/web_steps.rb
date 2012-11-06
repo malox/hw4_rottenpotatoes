@@ -242,13 +242,48 @@ Then /^the "([^"]*)" checkbox(?: within (.*))? should not be checked$/ do |label
 end
  
 Then /^(?:|I )should be on (.+)$/ do |page_name|
+
+#  step %Q{show me the page}
+
+#  puts "INSPECTING PAGENAME [#{[page_name]}"
+#  puts "INSPECTING PAGE [#{[page]}"
+
+  case page_name
+    when /the Similar Movies page for "([^"]*)"/
+     movie_title = page_name.match(/the Similar Movies page for "([^"]*)"/) 
+     if page.has_content?("Similar Movies to " + movie_title[1]) != nil
+#        puts "IF"
+        movie = Movie.find_by_title( movie_title[1] )
+        page_name_extract = path_to( "movie advanced path #{movie.id}/director" )
+      else
+#        puts "ELSE"
+        page_name_extract = path_to(page_name)
+        visit page_name_extract
+      end
+    else
+#      puts "DEFAULT"
+      page_name_extract = path_to(page_name)
+      visit page_name_extract
+  end
+
   current_path = URI.parse(current_url).path
+
+#  puts "CURRENT [#{current_path}] EXTRACT [#{page_name_extract}] "
+
   if current_path.respond_to? :should
-    current_path.should == path_to(page_name)
+    current_path.should == page_name_extract
   else
-    assert_equal path_to(page_name), current_path
+    assert_equal page_name_extract, current_path
   end
 end
+
+#Then /the Similar Movies page for "([^"]*)"/ do | title |
+#  if page.respond_to? :should
+#    page.should have_content("Similar Movies to " + title)
+#  else
+#    assert page.has_content?("Similar Movies to " + title)
+#  end
+#end
 
 Then /^(?:|I )should have the following query string:$/ do |expected_pairs|
   query = URI.parse(current_url).query

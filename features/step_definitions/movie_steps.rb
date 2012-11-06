@@ -76,12 +76,9 @@ Then /^I should see no movies$/ do
 end
 
 Then /^the director of "([^"]*)" should be "([^"]*)"$/ do |title, director|
-  step %Q{I am on the home page}
-  #rows = page.all("table#movies tbody tr td[1] td[3]").map!{ |x,y| [ x.text , y.text ] }
-  tv = page.find("div#main h2").map! {|t| t.text}
-  dv = page.find("div#main ul li[2]").map! {|t| t.text}
-  puts tv.inspect.to_s + " " + dv.inspect.to_s
-  #rows.each do | row |
-  #end
+  assert page.find("div#main h2").text.match( title ) != nil
+  assert page.find("div#main ul li[2]").text.match( director ) != nil
 end
+
+
 

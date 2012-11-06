@@ -6,6 +6,21 @@ class MoviesController < ApplicationController
     # will render app/views/movies/show.<extension> by default
   end
 
+  def director
+
+    # clean up session
+    session[:sort] = nil
+    session[:ratings] = nil
+
+    @movie = Movie.find params[:id]
+    if @movie.director != nil
+      @movies = Movie.find_all_by_director @movie.director
+    else
+      flash[:notice] = "'#{@movie.title}' has no director info."
+      redirect_to movies_path
+    end
+  end
+
   def index
     sort = params[:sort] || session[:sort]
     case sort
@@ -43,6 +58,11 @@ class MoviesController < ApplicationController
   def create
     @movie = Movie.create!(params[:movie])
     flash[:notice] = "#{@movie.title} was successfully created."
+
+    # clean up session
+    session[:sort] = nil
+    session[:ratings] = nil
+
     redirect_to movies_path
   end
 
@@ -54,6 +74,11 @@ class MoviesController < ApplicationController
     @movie = Movie.find params[:id]
     @movie.update_attributes!(params[:movie])
     flash[:notice] = "#{@movie.title} was successfully updated."
+
+    # clean up session
+    session[:sort] = nil
+    session[:ratings] = nil
+
     redirect_to movie_path(@movie)
   end
 
@@ -61,6 +86,11 @@ class MoviesController < ApplicationController
     @movie = Movie.find(params[:id])
     @movie.destroy
     flash[:notice] = "Movie '#{@movie.title}' deleted."
+
+    # clean up session
+    session[:sort] = nil
+    session[:ratings] = nil
+
     redirect_to movies_path
   end
 
